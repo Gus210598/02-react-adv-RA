@@ -1,64 +1,53 @@
 import ProductCard, { ProductImage, ProductTitle, ProductButtons } from '../components';
 import { products } from '../data/products';
-import { useShoppingCart  } from '../hooks/useShoppingCart';
+
 import '../styles/custom-styles.css';
 
+const product = products[0];
 
 export const ShoppingPage = () => {
 
-  const {onProductCountChange, shoppingCart } = useShoppingCart()
 
   return (
     <div>
         <h1>Shopping Store</h1>
         <hr />
-        <div style = {{
-          display: 'flex',
-          flexDirection: 'row',
-          flexWrap:'wrap',
-        }}>
 
-        {
-          products.map( product => (
-            <ProductCard 
-              product={ product }
-              className='bg-dark text-white'
-              key={ product.id }
-              onChange={ onProductCountChange }
-              value= { shoppingCart[product.id]?.count || 0}
-            >
-              <ProductImage className= "custom-image" style={{ boxShadow: '10px 10px 10px rgba(0,0,0,0.2)' }} />
-              <ProductTitle className="text-white text-bold" />
-              <ProductButtons className="custom-buttons" />
-            </ProductCard>
-          ))
-        }
-        </div>    
+          <ProductCard 
+            key={ product.id }
+            className='bg-dark text-white'
+            product={ product }
+            initialValues= {{
+              count:4,
+              maxCount: 10,
+            }}
 
-        <div className='shopping-cart' >
-          {
-            // Pasa un objeto a un arreglo para ocupar el map
-            Object.entries( shoppingCart ).map( ([ key, product ]) => (
-            <ProductCard 
-              key={ key }
-              product={ product }
-              className='bg-dark text-white'
-              style={{ width: '100px' }}
-              onChange={ onProductCountChange }
-              value= { product.count }
-            >
-              <ProductImage className= "custom-image" style={{ boxShadow: '10px 10px 10px rgba(0,0,0,0.2)' }} />
-                <ProductButtons 
-                  className="custom-buttons"
-                  style={{
-                    display:'flex',
-                    justifyContent: 'center'
-                  }} 
-                />
-            </ProductCard>
-            ))
-          }
-        </div>
+          >
+
+            {
+              ({ reset, isMaxCountReached, maxCount, count, increaseBy }) => (
+                <>
+                  <ProductImage className= "custom-image" style={{ boxShadow: '10px 10px 10px rgba(0,0,0,0.2)' }} />
+                  <ProductTitle className="text-white text-bold" />
+                  <ProductButtons className="custom-buttons" />
+
+                  <button onClick={ reset }>Reset</button>
+                  <button onClick={ () => increaseBy(-2) }>- 2</button>
+                  {
+                    ( !isMaxCountReached &&  <button onClick={ () => increaseBy(2) }>+ 2</button>)
+                  }
+                  {/* mostrar condicional */}
+                 
+
+                  <span>{ count } - { maxCount }</span>
+
+
+                </>
+              )
+            }
+
+          </ProductCard>
+   
     </div>
   )
 }
